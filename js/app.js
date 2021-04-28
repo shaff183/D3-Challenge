@@ -1,16 +1,16 @@
 // @TODO: YOUR CODE HERE!
 
 // svg container
-var svgHeight = 400;
-var svgWidth = 400;
+var svgHeight = 900;
+var svgWidth = 500;
 
 // create the margins of the graph
-var margin = {top: 10,right: 30,bottom: 30,left: 60};
+var margin = {top: 20,right: 40,bottom: 60,left: 100};
 var chartWidth = svgWidth - margin.left - margin.rightm;
 var chartHeight = svgHeight - margin.top - margin.bottom;
 
 // create svg container
-var svg = d3.select("scatter").append("svg")
+var svg = d3.select("#scatter").append("svg")
     .attr("height", svgHeight)
     .attr("width", svgWidth);
 
@@ -25,20 +25,15 @@ d3.csv("/data/data.csv").then(function(censusData) {
     // console.log the data to make sure it is loading in succesfully
     console.log(censusData);
 
-    // Add X axis
-    var x = d3.scaleLinear()
-        .domain([0, 4000])
-        .range([ 0, chartWidth ]);
-    svg.append("g")
-        .attr("transform", "translate(0," + chartHeight + ")")
-        .call(d3.axisBottom(x));
+    // parse the data
+    censusData.forEach(function(data) {
+        data.poverty = +data.poverty;
+        data.healthcare = +data.healthcare;
+    });
 
-    // Add Y axis
-    var y = d3.scaleLinear()
-        .domain([0, 500000])
-        .range([ chartHeight, 0]);
-    svg.append("g")
-        .call(d3.axisLeft(y));
-
+    // creating the scales and axis from the dataset
+    var yScale = d3.scaleLinear()
+        .domain([0, d3.max(censusData[9])])
+        .range([chartHeight, 0])
 });
 
