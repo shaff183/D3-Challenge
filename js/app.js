@@ -1,7 +1,7 @@
 // @TODO: YOUR CODE HERE!
 
 // svg container
-var svgHeight = 900;
+var svgHeight = 500;
 var svgWidth = 500;
 
 // create the margins of the graph
@@ -31,9 +31,26 @@ d3.csv("/data/data.csv").then(function(censusData) {
         data.healthcare = +data.healthcare;
     });
 
+    
     // creating the scales and axis from the dataset
     var yScale = d3.scaleLinear()
         .domain([0, d3.max(censusData[9])])
         .range([chartHeight, 0])
+
+    var xScale = d3.scaleBand()
+        .domain([0, d3.max(censusData[3])])
+        .range([0, chartWidth])
+
+    // create axis
+    var xAxis = d3.axisLeft(yScale);
+    var yAxis = d3.axisBottom(xScale);
+
+    // set x to the bottom of the chart
+    chartGroup.append("g")
+        .attr("transform", `translate(0, ${chartHeight})`)
+        .call(xAxis);
+
+
+
 });
 
