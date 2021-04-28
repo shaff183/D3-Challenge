@@ -62,12 +62,26 @@ d3.csv("/data/data.csv").then(function(censusData) {
         .append("circle")
         .attr("cx", d => xLinearScale(d.poverty))
         .attr("cy", d => yLinearScale(d.healthcare))
-        .attr("r", 10)
+        .attr("r", 15)
         .attr("fill", "blue")
         .attr("opacity", ".5")
         .attr("stroke", "black")
     
     // creating the labels for each state
-    
+    var labels = chartGroup.select("g")
+        .selectAll("circle")
+        .data(censusData)
+        .enter()
+        .append("text")
+        .text(d => d.abbr)
+        .attr("dy",-395)
+        .attr("x", d => xLinearScale(d.poverty))
+        .attr("y", d => yLinearScale(d.healthcare))
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px")
+        .attr("fill", "black");
+
+    // create labels for the axis
+    var xLabel = chartGroup.
 });
 
