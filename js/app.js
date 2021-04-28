@@ -2,11 +2,12 @@
 
 // svg container
 var svgHeight = 500;
-var svgWidth = 500;
+var svgWidth = 900;
 
 // create the margins of the graph
-var margin = {top: 20,right: 40,bottom: 60,left: 100};
-var chartWidth = svgWidth - margin.left - margin.rightm;
+var margin = {top: 20,right: 40,bottom: 80,left: 100};
+
+var chartWidth = svgWidth - margin.left - margin.right;
 var chartHeight = svgHeight - margin.top - margin.bottom;
 
 // create svg container
@@ -33,24 +34,40 @@ d3.csv("/data/data.csv").then(function(censusData) {
 
     
     // creating the scales and axis from the dataset
-    var yScale = d3.scaleLinear()
-        .domain([0, d3.max(censusData[9])])
-        .range([chartHeight, 0])
 
-    var xScale = d3.scaleBand()
-        .domain([0, d3.max(censusData[3])])
-        .range([0, chartWidth])
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(censusData, d => d.poverty) - 1, d3.max(censusData, d => d.poverty) + 1])
+        .range([0, chartWidth]);
 
-    // create axis
-    var xAxis = d3.axisLeft(yScale);
-    var yAxis = d3.axisBottom(xScale);
+    var yLinearScale = d3.scaleLinear()
+        .domain([d3.min(censusData, d => d.healthcare) - 1, d3.max(censusData, d => d.healthcare)+1])
+        .range([chartHeight, 0]);
 
-    // set x to the bottom of the chart
+    //Create x and y axis
+    var xAxis = d3.axisBottom(xLinearScale);
+    var yAxis = d3.axisLeft(yLinearScale);
+
+
+    //Append x and y axis to the chart
     chartGroup.append("g")
         .attr("transform", `translate(0, ${chartHeight})`)
         .call(xAxis);
+    chartGroup.append("g")
+        .call(yAxis);
 
-
-
+    // create the circles from the poverty and healthcare data points
+    var dataPoints = chartGroup.selectAll("circle")
+        .data(censusData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xLinearScale(d.poverty))
+        .attr("cy", d => yLinearScale(d.healthcare))
+        .attr("r", 10)
+        .attr("fill", "blue")
+        .attr("opacity", ".5")
+        .attr("stroke", "black")
+    
+    // creating the labels for each state
+    
 });
 
